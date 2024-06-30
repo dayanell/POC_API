@@ -4,8 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from Git repository using the same URL and credentials as in the Freestyle job
-                git credentialsId: 'git_id', url: 'https://github.com/dayanell/POC_API.git', branch: 'main'
+                git credentialsId: 'jenkins-ssh-key', url: 'https://github.com/dayanell/POC_API.git', branch: 'main'
             }
         }
 
