@@ -1,8 +1,8 @@
 pipeline {
   agent {
     docker {
-      image 'node:14' // Use an official Node.js Docker image with npm included
-      args '-u root:root' // Run as root to install global packages
+      image 'custom-node-ssh' // Use the custom Docker image with Node.js and SSH configuration
+      args '-u root:root' // Run as root to install global packages if needed
     }
   }
 
@@ -29,3 +29,4 @@ pipeline {
     }
   }
 }
+
