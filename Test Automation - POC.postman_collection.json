@@ -1,0 +1,523 @@
+{
+	"info": {
+		"_postman_id": "087afede-f151-4b9e-9d23-fdc8dcef148b",
+		"name": "Test Automation - POC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20760720",
+		"_collection_link": "https://gold-meteor-48427.postman.co/workspace/a-to-be~03e24842-50e5-43d2-aed6-6a8c6f26e8aa/collection/20760720-087afede-f151-4b9e-9d23-fdc8dcef148b?action=share&source=collection_link&creator=20760720"
+	},
+	"item": [
+		{
+			"name": "gateway authentication",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate response code is 200\", function () {",
+							"    pm.response.to.have.status(200)",
+							"});",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set('token', jsonData.id_token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"{{backend_gateway_usr}}\",\n  \"password\": \"{{backend_gateway_pwd}}\",\n  \"rememberMe\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{backend_gateway}}/api/authenticate",
+					"host": [
+						"{{backend_gateway}}"
+					],
+					"path": [
+						"api",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "enrollmentVehicleFile",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							" //Function to generate a random license plate",
+							"function generateLicensePlate() {",
+							"    // Generate two random uppercase letters",
+							"    let letters = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + String.fromCharCode(65 + Math.floor(Math.random() * 26));",
+							"    // Generate a random 4-digit number",
+							"    let numbers = Math.floor(1000 + Math.random() * 9000);",
+							"    return letters + numbers;",
+							"}",
+							"",
+							"pm.environment.set('licensePlate', generateLicensePlate());",
+							"",
+							"",
+							"let userName = pm.variables.replaceIn(\"{{$randomUserName}}\")",
+							"pm.environment.set('userName', `${userName}`)",
+							"",
+							"",
+							"let countryCode = pm.variables.replaceIn(\"{{countryCode}}\")",
+							"pm.environment.set('countryCode', `${countryCode}`)",
+							"",
+							"",
+							"let countryName = pm.variables.replaceIn(\"{{countryName}}\")",
+							"pm.environment.set('countryName', `${countryName}`)",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test: Validate that the status code is 200 when adding a new vehicle file in the app\", function () {",
+							"    pm.response.to.have.status(200);});",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the response time is within the acceptable range of 1000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);});",
+							"",
+							"",
+							"pm.test(\"Test: Ensure that the response is a JSON object\", function () {",
+							"    pm.expect(pm.response.json()).to.be.an('object');});",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the Content-Type header includes 'application/json'\", function () {",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');});",
+							"",
+							"",
+							"var response = pm.response.json();",
+							"var concatenatedPath = response.filePath;",
+							"var values = (concatenatedPath && concatenatedPath.split('/')) || [];",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the vehicle file path includes the correct username\", function () {",
+							"    pm.expect(values[0].toLowerCase()).to.eql(pm.environment.get(\"userName\").toLowerCase());});",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the vehicle file path includes the correct license plate\", function () {",
+							"    pm.expect(values[1].toLowerCase()).to.contain(pm.environment.get(\"licensePlate\").toLowerCase())});",
+							"    ",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "country",
+							"value": "{{countryCode}}",
+							"type": "text"
+						},
+						{
+							"key": "licensePlate",
+							"value": "{{licensePlate}}",
+							"type": "text"
+						},
+						{
+							"key": "state",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{userName}}",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/dayanebahia/Desktop/untitled folder/cars1.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{backend_gateway}}/selfserviceportalapi/api/operations/onboarding/files/vehicle",
+					"host": [
+						"{{backend_gateway}}"
+					],
+					"path": [
+						"selfserviceportalapi",
+						"api",
+						"operations",
+						"onboarding",
+						"files",
+						"vehicle"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer enrollment queue Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json(); ",
+							"",
+							"pm.test(\"Test: Validate that the status code is 200 when creating customer enrollment\", function () {",
+							"    pm.response.to.have.status(200);});",
+							"",
+							"",
+							"pm.test(\"Test: Validate that the cookies properties is correct\", function () {",
+							"    var cookies = pm.cookies.all();",
+							"    var cookie = cookies.find(c => c.name.startsWith('b793c0c680f6b1cdbe8ba1e4afb9f')); // ",
+							"    pm.expect(cookie.domain).to.contain(pm.environment.get(\"domain\"));",
+							"    pm.expect(cookie.httpOnly).to.be.true;",
+							"    pm.expect(cookie.secure).to.be.true;",
+							"    pm.expect(cookie.expires).to.eql(null); ",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Validate that date in the header is valid\", function () {",
+							"    const parsedDate = new Date(pm.response.headers.get('Date'));",
+							"    pm.expect(parsedDate).to.be.a('date');",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Validate that the response time is less than 800ms\", function () {",
+							"  pm.expect(pm.response.responseTime).to.be.below(800);",
+							"  });",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the account status is 'WAITING_PAYMENT_DETAILS' - customer enrollment\", function () {",
+							"    pm.expect(jsonData.status).to.eql( pm.environment.get(\"status\"));",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Ensure that the response is a JSON object\", function () {",
+							"    pm.expect(pm.response.json()).to.be.an('object');",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test headers: Ensure that he Content-Type should be application/json\", function () {",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.contain('application/json');",
+							"    });",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the email format is correct\", function () {",
+							"    var email = pm.response.json().enrollmentData.email;",
+							"    pm.expect(email).to.match(/^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/);",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the phone number format is correct\", function () {",
+							"    var phoneNumber = pm.response.json().enrollmentData.phoneNumber;",
+							"    if (phoneNumber !== null) {",
+							"        pm.expect(phoneNumber).to.match(/^\\+?[1-9]\\d{1,14}$/);}",
+							"        });",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the currency ID is valid\", function () {",
+							"    var currencyId = pm.response.json().enrollmentData.currencyId;",
+							"    pm.expect(currencyId).to.be.oneOf(['EUR', 'USD', 'GBP']);",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the address datatype are correct\", function () {",
+							"    var address = pm.response.json().enrollmentData.addresses[0];",
+							"    pm.expect(address.street).to.be.a('string');",
+							"    pm.expect(address.number).to.be.a('string');",
+							"    pm.expect(address.postalCode).to.be.a('string');",
+							"    pm.expect(address.city).to.be.a('string');",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the address type is 'MAILING_ADDRESS'\", function () {",
+							"    var address = pm.response.json().enrollmentData.addresses[0];",
+							"    pm.expect(address.addressType).to.equal('MAILING_ADDRESS');",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the address country is correct\", function () {",
+							"    var address = pm.response.json().enrollmentData.addresses[0];",
+							"    pm.expect(address.country).to.equal(pm.environment.get(\"countryCode\"));",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the vehicle license plate country ID is correct\", function () {",
+							"    var vehicle = pm.response.json().enrollmentData.vehicles[0];",
+							"    pm.expect(vehicle.licensePlateCountryId).to.equal(pm.environment.get(\"countryCode\"));",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the vehicle weight is correct\", function () {",
+							"    var vehicleWeightInResponse = pm.response.json().enrollmentData.vehicles[0].vehicleWeight;",
+							"    pm.expect(vehicleWeightInResponse).to.eql(pm.environment.get(\"vehicleWeight\"));",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the vehicle toll domain includes 'BBV'\", function () {",
+							"    var vehicle = pm.response.json().enrollmentData.vehicles[0];",
+							"    pm.expect(vehicle.tollDomain).to.be.an('array').that.includes('BBV');",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the response body is in the correct format\", function() {",
+							"    pm.expect(jsonData).to.be.an('object');",
+							"    pm.expect(jsonData.id).to.be.a('number');",
+							"    pm.expect(jsonData.enrollmentData).to.be.an('object');",
+							"    pm.expect(jsonData.enrollmentData.vehicles).to.be.an('array');",
+							"    (jsonData.enrollmentData.vehicles.length > 0) ",
+							"        pm.expect(jsonData.enrollmentData.vehicles[0].vehicleFiles).to.be.an('array');",
+							"        pm.expect(jsonData.enrollmentData.vehicles[0].vehicleFiles[0]).to.be.a('object');",
+							"        });",
+							"",
+							"",
+							"",
+							"pm.test(\"The customer enrollment was successfully created for the selected country\", function () {",
+							"    pm.expect(jsonData.enrollmentData.vehicles[0].licensePlateCountryId).to.eq(pm.environment.get(\"countryCode\"))",
+							"    });",
+							"  ",
+							"",
+							"pm.test(\"Test: Ensure the VAT number is a string\", function () {",
+							"    var vatNumber = pm.response.json().enrollmentData.vatNumber;",
+							"    pm.expect(vatNumber).to.be.a('string');",
+							"    });",
+							"",
+							"",
+							"",
+							"pm.test(\"Test: Ensure the VAT number is alphanumeric\", function () {",
+							"    var vatNumber = pm.response.json().enrollmentData.vatNumber;",
+							"    pm.expect(/^[a-zA-Z0-9]+$/.test(vatNumber)).to.be.true;",
+							"    });",
+							"",
+							"",
+							"pm.test(\"Test: Validate that the VAT number in the request matches the response\", function () {",
+							"    var vatNumber = pm.response.json().enrollmentData.vatNumber;",
+							"    pm.expect(vatNumber).to.eql(pm.environment.get(\"vatNumber\"));",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"",
+							"let countryName = pm.variables.replaceIn(\"{{countryName}}\")",
+							"pm.environment.set('countryName', `${countryName}`)",
+							"",
+							"",
+							"function generateVatNumber(countryCode) {",
+							"    switch (countryCode) {",
+							"        case 'AT':",
+							"            return 'ATU' + Math.floor(10000000 + Math.random() * 90000000);",
+							"        case 'BE':",
+							"            return 'BE0' + Math.floor(100000000 + Math.random() * 900000000);",
+							"        case 'BG':",
+							"            return 'BG' + (Math.random() < 0.5 ",
+							"                ? Math.floor(100000000 + Math.random() * 900000000)",
+							"                : Math.floor(1000000000 + Math.random() * 9000000000));",
+							"        case 'HR':",
+							"            return 'HR' + Math.floor(10000000000 + Math.random() * 90000000000);",
+							"        case 'CY':",
+							"            return 'CY' + Math.floor(10000000 + Math.random() * 90000000) + 'X';",
+							"        case 'CZ':",
+							"            return 'CZ' + Math.floor(10000000 + Math.random() * 90000000);",
+							"        case 'DK':",
+							"            return 'DK' + Math.floor(10000000 + Math.random() * 90000000);",
+							"        case 'EE':",
+							"            return 'EE' + Math.floor(100000000 + Math.random() * 900000000);",
+							"        case 'FI':",
+							"            return 'FI' + Math.floor(10000000 + Math.random() * 90000000);",
+							"        case 'FR':",
+							"            return 'FR1X' + Math.floor(100000000 + Math.random() * 900000000);",
+							"        case 'DE':",
+							"            return 'DE' + Math.floor(100000000 + Math.random() * 900000000);",
+							"        case 'EL':",
+							"            return 'EL' + Math.floor(100000000 + Math.random() * 900000000);",
+							"        case 'HU':",
+							"            return 'HU' + Math.floor(10000000 + Math.random() * 90000000);",
+							"        case 'IE':",
+							"            return 'IE1234567WA';",
+							"        case 'IT':",
+							"            return 'IT' + Math.floor(10000000000 + Math.random() * 90000000000);",
+							"        case 'LV':",
+							"            return 'LV' + Math.floor(10000000000 + Math.random() * 90000000000);",
+							"        case 'LT':",
+							"            return 'LT' + Math.floor(100000000 + Math.random() * 900000000);",
+							"        case 'LU':",
+							"            return 'LU' + Math.floor(10000000 + Math.random() * 90000000);",
+							"        case 'MT':",
+							"            return 'MT' + Math.floor(10000000 + Math.random() * 90000000);",
+							"        case 'NL':",
+							"            return 'NL' + Math.floor(100000000 + Math.random() * 900000000) + 'B01';",
+							"        case 'NO':",
+							"            return 'NO' + Math.floor(100000000 + Math.random() * 900000000) + 'MVA';",
+							"        case 'PL':",
+							"            return 'PL' + Math.floor(1000000000 + Math.random() * 9000000000);",
+							"        case 'PT':",
+							"            return 'PT' + Math.floor(100000000 + Math.random() * 900000000);",
+							"        case 'RO':",
+							"            return 'RO' + Math.floor(1000000000 + Math.random() * 9000000000);",
+							"        case 'SK':",
+							"            return 'SK' + Math.floor(1000000000 + Math.random() * 9000000000);",
+							"        case 'SI':",
+							"            return 'SI' + Math.floor(10000000 + Math.random() * 90000000);",
+							"        case 'ES':",
+							"            return 'ESX' + Math.floor(10000000 + Math.random() * 90000000);",
+							"        case 'SE':",
+							"            return 'SE' + Math.floor(100000000000 + Math.random() * 900000000000);",
+							"        case 'CHE':",
+							"            return 'CHE' + Math.floor(100000000 + Math.random() * 900000000) + 'MWST';",
+							"        case 'GB':",
+							"            return 'GB' + Math.floor(100000000 + Math.random() * 900000000);",
+							"        default:",
+							"            return 'INVALID';",
+							"    }",
+							"}",
+							"",
+							"",
+							"var countryCode = pm.environment.get(\"countryCode\");",
+							"var vatNumber = generateVatNumber(countryCode);",
+							"",
+							"pm.environment.set(\"vatNumber\", vatNumber);",
+							"console.log(\"Generated VAT Number: \" + vatNumber);",
+							"",
+							"// Generate a random vehicle weight between 1000 and 10000 kg",
+							"function generateVehicleWeight() {",
+							"    return Math.floor(1000 + Math.random() * (10000 - 1000)).toString();",
+							"}",
+							"",
+							"var vehicleWeight = generateVehicleWeight();",
+							"",
+							"pm.environment.set(\"vehicleWeight\", vehicleWeight);",
+							"console.log(\"Generated Vehicle Weight: \" + vehicleWeight);",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Dayane\",\n  \"lastName\": \"Lima\",\n  \"email\": \"movebeyondmailtrap@gmail.com\",\n  \"companyName\": \"ACME\",\n  \"acquisitionChannelId\": \"SELF_SERVICE_PORTAL\",\n  \"mobilePhone\": \"+351913638733\",\n  \"languageId\": \"en-US\",\n  \"leadSourceId\": \"ADVERTISEMENT\",\n  \"username\": \"{{userName}}\",\n  \"vatNumber\": \"{{vatNumber}}\",\n  \"addresses\": [\n    {\n      \"addressType\": \"MAILING_ADDRESS\",\n      \"street\": \"Some street\",\n      \"number\": \"12\",\n      \"postalCode\": \"AI121 A\",\n      \"city\": \"City\",\n      \"country\": \"{{countryCode}}\",\n      \"addressTypeId\": \"1\"\n    }\n  ],\n  \"vehicles\": [\n    {\n      \"licensePlateCountryId\": \"{{countryCode}}\",\n      \"licensePlateDistrictId\": \"\",\n      \"licensePlateNumber\": \"{{licensePlate}}\",\n      \"licensePlateDate\": \"\",\n      \"make\": \"\",\n      \"model\": \"\",\n      \"year\": \"\",\n      \"vehicleWeight\": \"{{vehicleWeight}}\",\n      \"tollDomain\": [\n        \"BBV\"\n      ],\n      \"vehicleFiles\": [\n        {\n          \"filePath\": \"{{filePath}}\",\n          \"originalFileName\": \"{{originalFileName}}\"\n        }\n      ]\n    }\n  ],\n  \"openingBalanceAmount\": \"10\",\n  \"minimumThresholdAmount\": \"5\",\n  \"accountTypeId\": \"INDIVIDUAL\",\n  \"accountGroupId\": \"PRIVATE\",\n  \"accountPlanId\": \"VIDEO_TOLL_COLLECTION\",\n  \"billingCycleId\": \"MONTHLY\",\n  \"currencyId\": \"EUR\",\n  \"paymentOptionId\": \"POST_PAID\",\n  \"paymentSettingsId\": \"AUTOMATIC\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{backend_gateway}}/customersapi/api/v1/operations/onboarding/customer-enrollment",
+					"host": [
+						"{{backend_gateway}}"
+					],
+					"path": [
+						"customersapi",
+						"api",
+						"v1",
+						"operations",
+						"onboarding",
+						"customer-enrollment"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -1,0 +1,59 @@
+{
+  "_": {
+    "postman_variable_scope": "environment",
+    "postman_exported_at": "2024-05-08T08:53:41.096Z",
+    "postman_exported_using": "Newman/6.1.2"
+  },
+  "id": "0526353d-9fcf-4308-82a3-222b62d43494",
+  "name": "QA",
+  "values": [
+    {
+      "type": "any",
+      "value": "admin",
+      "key": "backend_gateway_usr"
+    },
+    {
+      "type": "any",
+      "value": "ww3iIh0Wx8hV7aV7",
+      "key": "backend_gateway_pwd"
+    },
+    {
+      "type": "any",
+      "value": "https://backendgw.rdw.movebeyond-qa.a-to-be.org",
+      "key": "backend_gateway"
+    },
+    {
+      "type": "any",
+      "value": "NO2347",
+      "key": "licensePlate"
+    },
+    {
+      "type": "any",
+      "value": "Matilda_Runolfsson83",
+      "key": "userName"
+    },
+    {
+      "type": "any",
+      "value": "JANA43/PTJQ3177/VEHICLE_FILE_1714725634657.png",
+      "key": "filePath"
+    },
+    {
+      "type": "any",
+      "value": "cars.png",
+      "key": "originalFileName"
+    },
+    {
+      "type": "any",
+      "value": "backendgw.rdw.movebeyond-qa.a-to-be.org",
+      "key": "domain"
+    },
+    {
+      "type": "any",
+      "value": "eyJ4NXQiOiJaakU0WVRNMFpURTBaVEV4TWpZNU9URm1NV0l5T0RVMk5qSTJNalV5WldFNE5UUTJPVGszWW1RNU4yRXdaV0kyWmpCaVptWTROV0ZrTVdGak9USmxNQSIsImtpZCI6IlpqRTRZVE0wWlRFMFpURXhNalk1T1RGbU1XSXlPRFUyTmpJMk1qVXlaV0U0TlRRMk9UazNZbVE1TjJFd1pXSTJaakJpWm1ZNE5XRmtNV0ZqT1RKbE1BX1JTMjU2IiwiYWxnIjoiUlMyNTYifQ.eyJhdF9oYXNoIjoiMzdlQ2wwMHIxQTBVQmZ0Y0NsOTF5dyIsInN1YiI6ImFkbWluIiwiYW1yIjpbInBhc3N3b3JkIl0sImlzcyI6ImlkcC5yZHcubW92ZWJleW9uZC1xYS5hLXRvLWJlLm9yZ1wvb2F1dGgyXC90b2tlbiIsImV4dGVybmFsSWQiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsInByZWZfbGFuZyI6ImVuIiwiYXV0aG9yaXRpZXMiOlsiYWRtaW4iLCJST0xFX1NZU0FETUlOIiwiUk9MRV9TWVNURU0iLCJST0xFX0NVU1RPTUVSIl0sImF1ZCI6Ijk2VldnOFFqcnF1Q3lZT1lTbldETHpUcEpEMGEiLCJuYmYiOjE3MTUxMDE5MjAsImF6cCI6Ijk2VldnOFFqcnF1Q3lZT1lTbldETHpUcEpEMGEiLCJleHAiOjE3MTUxMDU1MjAsImlhdCI6MTcxNTEwMTkyMCwiZmFtaWx5X25hbWUiOiJXU08yIiwiZW1haWwiOiJKb3NlLkNhbmRpZG9fZXh0QGEtdG8tYmUuY29tIn0.g3S7DxT93D8QymBpYRPWACeodD7xyXMnUSXIYANEk3MCuApAGinQ3FU2PwGdHIVRnlmnxvYGKqut1A8EX-hBj46mLLQVxJgpyxDJ5x5P8Qsk0M6zryejyOs7QuyaBz9vDaGAZDr7cYiWc4AeMKQ4_lcyInsNlcTaHacs3LIFEysO95J6gPaG2I15fgSyD9xIBtAkkGPffGsF_nwVW2ZTpJcayyCE0-8Tzc4KFGqqbf-75UhzcaH_vNWSck2E1JnxuS-AiYWpFwjovLbTOJpkDSqp3zX9Cq0ZTT-FJv1c4To0i-kht9Ypcr8w1xrIpetPprG0YpgfXyKHt5D4iZHdXg",
+      "key": "token"
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2024-05-08T08:55:14.916Z",
+  "_postman_exported_using": "Newman/6.1.2"
+}
