@@ -10,12 +10,11 @@ pipeline {
 
         stage('Run Newman Tests') {
             steps {
-                // Run Newman command using the environment files from the repository
                 sh '''
                     newman run "Test Automation - POC.postman_collection.json" \
                     -e "QA.postman_environment.json" \
                     -d "data.json" \
-                    -r htmlextra --reporter-htmlextra-export newman/html-report.html
+                    -r htmlextra
                 '''
             }
         }
@@ -38,3 +37,4 @@ pipeline {
         }
     }
 }
+
